@@ -19,12 +19,14 @@ async def get_excuse(situation: str):
             "https://ai.hackclub.com/chat/completions",
             headers={"Authorization": f"Bearer {KEY}"},
             json={
+                "model": "gpt-4o-mini",
                 "messages": [
                     {"role": "system", "content": "You generate funny, creative, slightly unhinged excuses. One sentence only. No quotes around your answer."},
                     {"role": "user", "content":  f"Give me an excuse for: {situation}"} ,
-                        ],   
-                    }
+                ],   
+            }
             
         )
-data = response.json()
-excuese = data["choices"][0]["message"]["content"]]
+        data = response.json()
+        excuse = data["choices"][0]["message"]["content"]
+        return {"situation": situation, "excuse": excuse}
