@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
+import httpx
 import os
  
 load_dotenv()
@@ -13,4 +14,17 @@ def root():
 
 @app.get("/excuse")
 async def get_excuse(situation: str):
-    return {"situation": situation, "excuse": "coming soon!"}
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://ai.hackclub.com/chat/completions",
+            headers={"Authorization": f"Bearer {KEY}"},
+            json={
+                "messages": [
+                    {"role": "system", "content": "You generate funny, creative, slightly unhinged excuses. One sentence only. No quotes around your answer."},
+                    {"role": "user", "content":  f"Give me an excuse for: {situation}"} ,
+                        ],   
+                    }
+            
+        )
+data = response.json()
+excuese = data["choices"][0]["message"]["content"]]
